@@ -63,7 +63,7 @@ static int _single_pivot_qsort(int a[], int lo, int hi)
 {
         int key =  a[lo];
         int first = lo;
-        while(lo<hi){
+        while(lo<=hi){
                 if(a[lo]>key){
                         if(a[hi]<key){
                                 printf("%d, %d", a[lo], a[hi]);
