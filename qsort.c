@@ -1,5 +1,5 @@
 #include "my_qsort.h"
-
+#include <stdio.h>
 /*
   quicksort эрэмбэлэх аргын цааш хуваагдах ёсгүй хэмжээ
 */
@@ -15,7 +15,19 @@ static int init_seed = 0;  // Random seed 1 удаа эхлүүлнэ
 */
 static void insertion_sort(int a[], int lo, int hi)
 {
-        /* Оруулан эрэмбэлэх аргыг хэрэгжүүл */
+	int i, j, key;
+        int n = hi - lo;
+	for (i = lo; i < n; i++)
+	{
+		key = a[i];
+		j = i - 1;
+		while (j >= lo && a[j] > key)
+		{
+			a[j + 1] = a[j];
+			j--;
+		}
+		a[j + 1] = key;
+	}
 }
 
 /*
@@ -47,9 +59,26 @@ static void random_shuffle(int a[], int lo, int hi)
 /*
   1-pivot хурдан эрэмбэлэх функц.
 */
-static void _single_pivot_qsort(int a[], int lo, int hi)
+static int _single_pivot_qsort(int a[], int lo, int hi)
 {
-        /* Энд quicksort хэрэгжүүл */
+        int key =  a[lo];
+        int first = lo;
+        while(lo<hi){
+                if(a[lo]>key){
+                        if(a[hi]<key){
+                                printf("%d, %d", a[lo], a[hi]);
+                                swap(&a[lo], &a[hi]);
+                        }
+                        else{
+                                hi--;
+                        }
+                }
+                else{
+                        lo++;
+                }
+        }
+        swap(&a[first], &a[lo]);
+        return lo;
 }
 
 /*
@@ -58,8 +87,14 @@ static void _single_pivot_qsort(int a[], int lo, int hi)
  */
 void single_pivot_qsort(int a[], int lo, int hi)
 {
+        if(hi - lo == CUTOFF){
+                insertion_sort(a, lo, hi);
+                return;
+        }
         random_shuffle(a, lo, hi);
-        _single_pivot_qsort(a, lo, hi);
+        int mid = _single_pivot_qsort(a, lo, hi);
+        single_pivot_qsort(a, lo, mid);
+        single_pivot_qsort(a, mid+1, hi);
 }
 
 /*
