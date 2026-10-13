@@ -1,5 +1,4 @@
 #include "my_qsort.h"
-#include <stdio.h>
 /*
   quicksort эрэмбэлэх аргын цааш хуваагдах ёсгүй хэмжээ
 */
@@ -16,8 +15,7 @@ static int init_seed = 0;  // Random seed 1 удаа эхлүүлнэ
 static void insertion_sort(int a[], int lo, int hi)
 {
 	int i, j, key;
-        int n = hi - lo;
-	for (i = lo; i < n; i++)
+	for (i = lo; i < hi; i++)
 	{
 		key = a[i];
 		j = i - 1;
@@ -87,13 +85,13 @@ static int _single_pivot_qsort(int a[], int lo, int hi)
  */
 void single_pivot_qsort(int a[], int lo, int hi)
 {
-        if(hi - lo == CUTOFF){
+        if(hi - lo <= CUTOFF){
                 insertion_sort(a, lo, hi);
                 return;
         }
         random_shuffle(a, lo, hi);
         int mid = _single_pivot_qsort(a, lo, hi);
-        single_pivot_qsort(a, lo, mid);
+        single_pivot_qsort(a, lo, mid-1);
         single_pivot_qsort(a, mid+1, hi);
 }
 
