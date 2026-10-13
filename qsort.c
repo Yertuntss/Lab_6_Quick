@@ -64,7 +64,6 @@ static int _single_pivot_qsort(int a[], int lo, int hi)
         while(lo<=hi){
                 if(a[lo]>key){
                         if(a[hi]<key){
-                                printf("%d, %d", a[lo], a[hi]);
                                 swap(&a[lo], &a[hi]);
                         }
                         else{
