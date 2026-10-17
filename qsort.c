@@ -91,7 +91,7 @@ void single_pivot_qsort(int a[], int lo, int hi)
         }
         random_shuffle(a, lo, hi);
         int mid = _single_pivot_qsort(a, lo, hi);
-        single_pivot_qsort(a, lo, mid-1);
+        single_pivot_qsort(a, lo, mid);
         single_pivot_qsort(a, mid+1, hi);
 }
 
@@ -100,10 +100,23 @@ void single_pivot_qsort(int a[], int lo, int hi)
 */
 static void _dual_pivot_qsort(int a[], int lo, int hi)
 {
-        /*
-          Энд dual-pivot quicksort хэрэгжүүл
-        */
-	
+        int key =  a[lo];
+        int first = lo;
+        int last = hi;
+        int run = 1;
+        while(run){
+                while(a[lo]<=key && lo<=last){
+                        lo++;
+                }
+                while(a[hi]>= key && hi>first){
+                        hi--;
+                }
+                if(lo>=hi){
+                        run = 0;
+                }
+                swap(&a[lo], &a[hi]);
+        }
+        swap(&a[first], &a[lo]);
 }
 /*
   wrapper function for _dual_pivot_qsort
