@@ -97,25 +97,41 @@ void single_pivot_qsort(int a[], int lo, int hi)
 /*
   Dual-pivot хурдан эрэмбэлэх функц
 */
-static void _dual_pivot_qsort(int a[], int lo, int hi)
+static int _dual_pivot_qsort(int a[], int lo, int hi)
 {
-        int key =  a[lo];
+        int key1 =  a[lo];
+        int key2 =  a[hi];
+        if(a[lo] > a[hi]){
+                swap(&a[hi], &a[lo]);
+        }
+        int returnValue[2];
+        int firstBracket = lo, lastBracket = hi;
         int first = lo;
         int last = hi;
-        int run = 1;
-        while(run){
-                while(a[lo]<=key && lo<=last){
+        while(1){
+                while(a[lo]<key1 && lo<last){
+                        firstBracket++;
+                }
+                while(a[hi]>key2 && hi>first){
+                        lastBracket--;
+                }
+                while(a[lo]=key1){
                         lo++;
                 }
-                while(a[hi]>= key && hi>first){
+                while(a[hi]=key2){
                         hi--;
                 }
                 if(lo>=hi){
-                        run = 0;
+                        break;
                 }
-                swap(&a[lo], &a[hi]);
+                swap(&a[firstBracket], &a[lastBracket]);
         }
-        swap(&a[first], &a[lo]);
+
+        swap(&a[first], &a[firstBracket]);
+        swap(&a[last], &a[lastBracket]);
+        returnValue[0] = firstBracket;
+        returnValue[1] = lastBracket;
+        return returnValue;
 }
 /*
   wrapper function for _dual_pivot_qsort
@@ -123,7 +139,16 @@ static void _dual_pivot_qsort(int a[], int lo, int hi)
 */
 void dual_pivot_qsort(int a[], int lo, int hi)
 {
+        if(hi - lo <= CUTOFF){
+                insertion_sort(a, lo, hi);
+                return;
+        }
         random_shuffle(a, lo, hi);
-        _dual_pivot_qsort(a, lo, hi);
+        int arr[2] = _dual_pivot_qsort(a, lo, hi);
+        int mid1 = arr[0];
+        int mid2 = arr[1];
+        dual_pivot_qsort(a, lo, mid1-1);
+        dual_pivot_qsort(a, mid1+1, mid2-1);
+        dual_pivot_qsort(a, mid2+1, hi);
 }
 
