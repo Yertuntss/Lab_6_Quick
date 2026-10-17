@@ -61,12 +61,17 @@ static int _single_pivot_qsort(int a[], int lo, int hi)
 {
         int key =  a[lo];
         int first = lo;
-        while(lo<=hi){
-                while(a[lo]<=key){
+        int last = hi;
+        int run = 1;
+        while(run){
+                while(a[lo]<=key && lo<=last){
                         lo++;
                 }
-                while(a[hi]>= key){
+                while(a[hi]>= key && hi>first){
                         hi--;
+                }
+                if(lo>=hi){
+                        run = 0;
                 }
                 swap(&a[lo], &a[hi]);
         }
