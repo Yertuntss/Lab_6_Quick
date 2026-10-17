@@ -62,8 +62,7 @@ static int _single_pivot_qsort(int a[], int lo, int hi)
         int key =  a[lo];
         int first = lo;
         int last = hi;
-        int run = 1;
-        while(run){
+        while(1){
                 while(a[lo]<=key && lo<=last){
                         lo++;
                 }
@@ -71,7 +70,7 @@ static int _single_pivot_qsort(int a[], int lo, int hi)
                         hi--;
                 }
                 if(lo>=hi){
-                        run = 0;
+                        break;
                 }
                 swap(&a[lo], &a[hi]);
         }
@@ -90,8 +89,8 @@ void single_pivot_qsort(int a[], int lo, int hi)
                 return;
         }
         random_shuffle(a, lo, hi);
-        int mid = _single_pivot_qsort(a, lo, hi);
-        single_pivot_qsort(a, lo, mid);
+        int mid = _single_pivot_qsort(a, lo, hi);       
+        single_pivot_qsort(a, lo, mid-1);
         single_pivot_qsort(a, mid+1, hi);
 }
 
