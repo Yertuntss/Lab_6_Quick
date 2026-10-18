@@ -60,8 +60,8 @@ static void random_shuffle(int a[], int lo, int hi)
 static int _single_pivot_qsort(int a[], int lo, int hi)
 {
         int key =  a[lo];
-        int first = lo;
-        int last = hi;
+        int first = lo+1;
+        int last = hi-1;
         while(1){
                 while(a[lo]<=key && lo<=last){
                         lo++;
@@ -97,41 +97,46 @@ void single_pivot_qsort(int a[], int lo, int hi)
 /*
   Dual-pivot хурдан эрэмбэлэх функц
 */
-static int _dual_pivot_qsort(int a[], int lo, int hi)
+static void _dual_pivot_qsort(int a[], int lo, int hi, int *mid1, int *mid2)
 {
-        int key1 =  a[lo];
-        int key2 =  a[hi];
         if(a[lo] > a[hi]){
                 swap(&a[hi], &a[lo]);
         }
-        int returnValue[2];
-        int firstBracket = lo, lastBracket = hi;
-        int first = lo;
-        int last = hi;
-        while(1){
-                while(a[lo]<key1 && lo<last){
-                        firstBracket++;
+        int key1 =  a[lo];
+        int key2 =  a[hi];
+        int first = lo+1;
+        int last = hi-1;
+        int var = first;
+        while(var <= last){
+                if(a[var] < key1){
+                        swap(&a[var], &a[first]);
+                        first++;
+                        var++;
                 }
-                while(a[hi]>key2 && hi>first){
-                        lastBracket--;
-                }
-                while(a[lo]=key1){
-                        lo++;
-                }
-                while(a[hi]=key2){
-                        hi--;
-                }
-                if(lo>=hi){
-                        break;
-                }
-                swap(&a[firstBracket], &a[lastBracket]);
-        }
+                else if(a[var] > key2){
+                        while(a[last]>key2 && var<last){
+                                last--;
+                        }
+                        swap(&a[var], &a[last]);
+                        last--;
 
-        swap(&a[first], &a[firstBracket]);
-        swap(&a[last], &a[lastBracket]);
-        returnValue[0] = firstBracket;
-        returnValue[1] = lastBracket;
-        return returnValue;
+                        if(a[var] < key1){
+                                swap(&a[var], &a[first]);
+                                first++;
+                        }
+                        var++;
+                }
+                else{
+                        var++;
+                }
+        }
+        first--;
+        last++;
+        swap(&a[first], &a[lo]);
+        swap(&a[last], &a[hi]);
+
+        *mid1 = first;
+        *mid2 = last;
 }
 /*
   wrapper function for _dual_pivot_qsort
@@ -144,9 +149,10 @@ void dual_pivot_qsort(int a[], int lo, int hi)
                 return;
         }
         random_shuffle(a, lo, hi);
-        int arr[2] = _dual_pivot_qsort(a, lo, hi);
-        int mid1 = arr[0];
-        int mid2 = arr[1];
+        
+        int mid1, mid2;
+        _dual_pivot_qsort(a, lo, hi, &mid1, &mid2);
+
         dual_pivot_qsort(a, lo, mid1-1);
         dual_pivot_qsort(a, mid1+1, mid2-1);
         dual_pivot_qsort(a, mid2+1, hi);
