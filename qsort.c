@@ -143,9 +143,9 @@ static void _dual_pivot_qsort(int a[], int lo, int hi)
 
         int mid1 = first;
         int mid2 = last;
-        dual_pivot_qsort(a, lo, mid1-1);
-        dual_pivot_qsort(a, mid1+1, mid2-1);
-        dual_pivot_qsort(a, mid2+1, hi);
+        _dual_pivot_qsort(a, lo, mid1-1);
+        _dual_pivot_qsort(a, mid1+1, mid2-1);
+        _dual_pivot_qsort(a, mid2+1, hi);
 }
 /*
   wrapper function for _dual_pivot_qsort
