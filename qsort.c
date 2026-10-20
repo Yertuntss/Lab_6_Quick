@@ -14,7 +14,7 @@ static int init_seed = 0;  // Random seed 1 удаа эхлүүлнэ
 static void insertion_sort(int a[], int lo, int hi)
 {
 	int i, j, key;
-	for (i = lo; i <= hi; i++)
+	for (i = lo; i < hi; i++)
 	{
 		key = a[i];
 		j = i - 1;
