@@ -7,7 +7,6 @@
 #endif
 
 static int init_seed = 0;  // Random seed 1 удаа эхлүүлнэ
-
 /*
   Оруулан эрэмбэлэх функц.
   [lo, hi] завсрах тоонуудыг оруулан эрэмбэлэх аргаар эрэмбэлнэ.
@@ -15,7 +14,7 @@ static int init_seed = 0;  // Random seed 1 удаа эхлүүлнэ
 static void insertion_sort(int a[], int lo, int hi)
 {
 	int i, j, key;
-	for (i = lo; i < hi; i++)
+	for (i = lo; i <= hi; i++)
 	{
 		key = a[i];
 		j = i - 1;
@@ -57,25 +56,32 @@ static void random_shuffle(int a[], int lo, int hi)
 /*
   1-pivot хурдан эрэмбэлэх функц.
 */
-static int _single_pivot_qsort(int a[], int lo, int hi)
+static void _single_pivot_qsort(int a[], int lo, int hi)
 {
+        if(hi - lo <= CUTOFF){
+                insertion_sort(a, lo, hi);
+                return;
+        }
         int key =  a[lo];
         int first = lo+1;
-        int last = hi-1;
+        int last = hi;
         while(1){
-                while(a[lo]<=key && lo<=last){
-                        lo++;
+                while(first<=hi && a[first]<key){
+                        first++;
                 }
-                while(a[hi]>= key && hi>first){
-                        hi--;
+                while(last>lo && a[last]>key){
+                        last--;
                 }
-                if(lo>=hi){
+                if(first>=last){
                         break;
                 }
-                swap(&a[lo], &a[hi]);
+                swap(&a[first], &a[last]);
+                first++;
+                last--;
         }
-        swap(&a[first], &a[lo]);
-        return lo;
+        swap(&a[lo], &a[last]);
+        _single_pivot_qsort(a, lo, last-1);
+        _single_pivot_qsort(a, last+1, hi);
 }
 
 /*
@@ -84,21 +90,21 @@ static int _single_pivot_qsort(int a[], int lo, int hi)
  */
 void single_pivot_qsort(int a[], int lo, int hi)
 {
-        if(hi - lo <= CUTOFF){
-                insertion_sort(a, lo, hi);
-                return;
-        }
+
         random_shuffle(a, lo, hi);
-        int mid = _single_pivot_qsort(a, lo, hi);       
-        single_pivot_qsort(a, lo, mid-1);
-        single_pivot_qsort(a, mid+1, hi);
+        _single_pivot_qsort(a, lo, hi);  
+
 }
 
 /*
   Dual-pivot хурдан эрэмбэлэх функц
 */
-static void _dual_pivot_qsort(int a[], int lo, int hi, int *mid1, int *mid2)
+static void _dual_pivot_qsort(int a[], int lo, int hi)
 {
+        if(hi - lo <= CUTOFF){
+                insertion_sort(a, lo, hi);
+                return;
+        }
         if(a[lo] > a[hi]){
                 swap(&a[hi], &a[lo]);
         }
@@ -135,8 +141,11 @@ static void _dual_pivot_qsort(int a[], int lo, int hi, int *mid1, int *mid2)
         swap(&a[first], &a[lo]);
         swap(&a[last], &a[hi]);
 
-        *mid1 = first;
-        *mid2 = last;
+        int mid1 = first;
+        int mid2 = last;
+        dual_pivot_qsort(a, lo, mid1-1);
+        dual_pivot_qsort(a, mid1+1, mid2-1);
+        dual_pivot_qsort(a, mid2+1, hi);
 }
 /*
   wrapper function for _dual_pivot_qsort
@@ -144,17 +153,8 @@ static void _dual_pivot_qsort(int a[], int lo, int hi, int *mid1, int *mid2)
 */
 void dual_pivot_qsort(int a[], int lo, int hi)
 {
-        if(hi - lo <= CUTOFF){
-                insertion_sort(a, lo, hi);
-                return;
-        }
         random_shuffle(a, lo, hi);
         
-        int mid1, mid2;
-        _dual_pivot_qsort(a, lo, hi, &mid1, &mid2);
-
-        dual_pivot_qsort(a, lo, mid1-1);
-        dual_pivot_qsort(a, mid1+1, mid2-1);
-        dual_pivot_qsort(a, mid2+1, hi);
+        _dual_pivot_qsort(a, lo, hi);
 }
 

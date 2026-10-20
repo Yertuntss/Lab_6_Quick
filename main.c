@@ -17,7 +17,7 @@ int main()
 		fscanf(fin, "%d", &a[i]);
 	fclose(fin);
 
-	dual_pivot_qsort(a, 0, n - 1);
+	single_pivot_qsort(a, 0, n - 1);
 
 	FILE *fout = fopen("output.txt", "w+");
 	for (i = 0; i < n; i++)
